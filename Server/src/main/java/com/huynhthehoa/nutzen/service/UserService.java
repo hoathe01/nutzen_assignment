@@ -3,6 +3,7 @@ package com.huynhthehoa.nutzen.service;
 import com.huynhthehoa.nutzen.entity.RoleEntity;
 import com.huynhthehoa.nutzen.entity.UserEntity;
 import com.huynhthehoa.nutzen.payload.request.RegisterRequest;
+import com.huynhthehoa.nutzen.payload.request.UpdateRequest;
 import com.huynhthehoa.nutzen.payload.response.RoleResponse;
 import com.huynhthehoa.nutzen.payload.response.UserResponse;
 import com.huynhthehoa.nutzen.repository.UserRepository;
@@ -43,14 +44,33 @@ public class UserService implements UserServiceImp {
 
     @Override
     public boolean insertUser(RegisterRequest registerRequest) {
-
         try {
             UserEntity userEntity = UserEntity.builder()
                     .username(registerRequest.getUsername())
                     .email(registerRequest.getEmail())
                     .password(passwordEncoder.encode(registerRequest.getPassword()))
                     .role(RoleEntity.builder()
-                            .id(registerRequest.getRole())
+                            .id(registerRequest.getIdRole())
+                            .build())
+                    .build();
+            userRepository.save(userEntity);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateUser(UpdateRequest updateRequest) {
+        try {
+            UserEntity userEntity = UserEntity.builder()
+                    .id(updateRequest.getId())
+                    .username(updateRequest.getUsername())
+                    .email(updateRequest.getEmail())
+                    .password(passwordEncoder.encode(updateRequest.getPassword()))
+                    .role(RoleEntity.builder()
+                            .id(updateRequest.getIdRole())
                             .build())
                     .build();
             userRepository.save(userEntity);
